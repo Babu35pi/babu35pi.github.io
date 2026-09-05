@@ -1,25 +1,50 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Charity Pi App Uganda</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Charity Pi Uganda</title>
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<script> Pi.init({ version: "2.0", sandbox: true }) </script>
+<style>
+body { font-family: Arial; text-align: center; padding: 30px; }
+button { background: #8a2be2; color: white; padding: 15px 30px; font-size: 18px; border: none; border-radius: 10px; }
+</style>
 </head>
 <body>
 <h1>Welcome to Charity Pi Uganda</h1>
 <p>Donate to help orphans in Uganda</p>
 <button onclick="donate()">Donate 1 Pi</button>
-
+<p id="status"></p>
 <script>
-Pi.init({ version: "2.0", sandbox: true });
-
-async function donate(){
-  const payment = await Pi.createPayment({
-    amount: 1,
-    memo: "Charity donation",
-    metadata: {type: "donation"}
-  });
-  alert("Thank you for donating!");
+async function donate() {
+  try {
+    document.getElementById('status').innerText = "Connecting to Pi...";
+    const auth = await Pi.authenticate(['payments'], onIncompletePaymentFound);
+    document.getElementById('status').innerText = "Creating payment...";
+    Pi.createPayment({
+      amount: 1,
+      memo: "Donation for Uganda Orphans",
+      metadata: { type: "donation" }
+    }, {
+      onReadyForServerApproval: function(paymentId) {
+        document.getElementById('status').innerText = "Payment approved: " + paymentId;
+        console.log("READY FOR SERVER APPROVAL", paymentId);
+      },
+      onReadyForServerCompletion: function(paymentId, txid) {
+        document.getElementById('status').innerText = "SUCCESS! Donation complete. ID: " + paymentId;
+      },
+      onCancel: function(paymentId) {
+        document.getElementById('status').innerText = "Cancelled";
+      },
+      onError: function(error, payment) {
+        document.getElementById('status').innerText = "Error: " + error;
+      }
+    });
+  } catch(e) {
+    document.getElementById('status').innerText = "Error: " + e.message;
+  }
+}
+function onIncompletePaymentFound(payment) {
+  console.log("incomplete payment found", payment);
 }
 </script>
 </body>

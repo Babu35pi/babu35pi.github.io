@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Charity Pi App Uganda</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+</head>
+<body>
+<h1>Welcome to Charity Pi Uganda</h1>
+<p>Donate to help orphans in Uganda</p>
+<button onclick="donate()">Donate 1 Pi</button>
+
+<script>
+Pi.init({ version: "2.0", sandbox: true });
+
+async function donate(){
+  const payment = await Pi.createPayment({
+    amount: 1,
+    memo: "Charity donation",
+    metadata: {type: "donation"}
+  });
+  alert("Thank you for donating!");
+}
+</script>
+</body>
+</html>

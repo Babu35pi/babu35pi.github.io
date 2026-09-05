@@ -1,50 +1,85 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Charity Pi Uganda</title>
+<title>Charity Pi Uganda - Hope for Orphans</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <script> Pi.init({ version: "2.0", sandbox: true }) </script>
 <style>
-body { font-family: Arial; text-align: center; padding: 30px; }
-button { background: #8a2be2; color: white; padding: 15px 30px; font-size: 18px; border: none; border-radius: 10px; }
+  body { font-family: 'Segoe UI', Arial; margin:0; background:#f7f9fc; text-align:center; }
+  .hero { background: linear-gradient(135deg,#8a2be2,#00c6ff); color:white; padding:60px 20px; }
+  .hero h1 { font-size:38px; margin:10px; }
+  .hero p { font-size:18px; opacity:0.95; }
+  .card { background:white; margin:-30px auto 20px; max-width:500px; border-radius:20px; padding:30px; box-shadow:0 15px 35px rgba(0,0,0,0.15); }
+  .donate-btn { background: linear-gradient(90deg,#8a2be2,#5a2be2); color:white; border:none; padding:18px 30px; border-radius:50px; font-size:20px; font-weight:bold; width:100%; cursor:pointer; margin:10px 0; box-shadow:0 8px 20px rgba(138,43,226,0.4); }
+  .donate-btn:hover { transform:scale(1.03); }
+  .impact { display:flex; justify-content:space-around; margin:25px 0; }
+  .impact div { background:#f1f0ff; padding:15px; border-radius:15px; width:28%; }
+  .impact b { font-size:22px; color:#8a2be2; display:block; }
+  #status { margin-top:15px; font-weight:bold; color:#2e7d32; }
+  footer { padding:20px; color:#888; font-size:13px; }
 </style>
 </head>
 <body>
-<h1>Welcome to Charity Pi Uganda</h1>
-<p>Donate to help orphans in Uganda</p>
-<button onclick="donate()">Donate 1 Pi</button>
-<p id="status"></p>
+<div class="hero">
+  <h1>🇺🇬 Charity Pi Uganda</h1>
+  <p>Restoring Hope, Feeding Dreams, Building Future<br>100% of Pi donations go to orphans</p>
+</div>
+
+<div class="card">
+  <h2>💜 Make a Difference Today</h2>
+  <p>Your Pi helps us provide food, education & shelter to 500+ orphans in Kampala, Uganda.</p>
+  
+  <div class="impact">
+    <div><b>500+</b>Children</div>
+    <div><b>12</b>Years</div>
+    <div><b>100%</b>Transparent</div>
+  </div>
+
+  <button class="donate-btn" onclick="donate(1)">❤️ Donate 1 Pi</button>
+  <button class="donate-btn" onclick="donate(3)" style="background:linear-gradient(90deg,#00c6ff,#0072ff)">🌟 Donate 3 Pi</button>
+  <button class="donate-btn" onclick="donate(5)" style="background:linear-gradient(90deg,#ff8a00,#e52e71)">👑 Donate 5 Pi</button>
+  
+  <p id="status"></p>
+  <p style="font-size:12px; color:#666; margin-top:20px;">✓ Verified Pi App ✓ Secure Pi SDK v2.0 ✓ Non-Profit Uganda</p>
+</div>
+
+<footer>
+  Charity Pi Uganda | Kampala, Uganda | Contact: babu35pi | Pi Network Official Charity
+</footer>
+
 <script>
-async function donate() {
+async function donate(amount) {
+  document.getElementById("status").innerText = "Connecting to Pi Wallet...";
   try {
-    document.getElementById('status').innerText = "Connecting to Pi...";
-    const auth = await Pi.authenticate(['payments'], onIncompletePaymentFound);
-    document.getElementById('status').innerText = "Creating payment...";
+    const scopes = ['payments','username'];
+    const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
     Pi.createPayment({
-      amount: 1,
-      memo: "Donation for Uganda Orphans",
-      metadata: { type: "donation" }
+      amount: amount,
+      memo: "Donation to Uganda Orphans - " + amount + " Pi - God Bless You!",
+      metadata: { type: "charity", uganda: true }
     }, {
       onReadyForServerApproval: function(paymentId) {
-        document.getElementById('status').innerText = "Payment approved: " + paymentId;
-        console.log("READY FOR SERVER APPROVAL", paymentId);
+        console.log("Payment for approval:", paymentId);
+        document.getElementById("status").innerText = "Payment created! Approving...";
       },
       onReadyForServerCompletion: function(paymentId, txid) {
-        document.getElementById('status').innerText = "SUCCESS! Donation complete. ID: " + paymentId;
+        document.getElementById("status").innerText = "🎉 SUCCESS! Thank you! Tx: " + txid;
       },
       onCancel: function(paymentId) {
-        document.getElementById('status').innerText = "Cancelled";
+        document.getElementById("status").innerText = "Donation cancelled. God bless you anyway!";
       },
       onError: function(error, payment) {
-        document.getElementById('status').innerText = "Error: " + error;
+        document.getElementById("status").innerText = "Error: " + error.message;
       }
     });
-  } catch(e) {
-    document.getElementById('status').innerText = "Error: " + e.message;
+  } catch (err) {
+    document.getElementById("status").innerText = "Auth error: " + err;
   }
 }
 function onIncompletePaymentFound(payment) {
-  console.log("incomplete payment found", payment);
+  console.log("Incomplete payment found:", payment);
+  return;
 }
 </script>
 </body>

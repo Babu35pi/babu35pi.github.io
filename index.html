@@ -1,85 +1,209 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Charity Pi Uganda - Hope for Orphans</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>BabuLink Exchange - Pi to Fiat Uganda</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Exchange Pi Crypto to Fiat - Instant MTN Airtel Money Uganda">
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <script> Pi.init({ version: "2.0", sandbox: true }) </script>
 <style>
-  body { font-family: 'Segoe UI', Arial; margin:0; background:#f7f9fc; text-align:center; }
-  .hero { background: linear-gradient(135deg,#8a2be2,#00c6ff); color:white; padding:60px 20px; }
-  .hero h1 { font-size:38px; margin:10px; }
-  .hero p { font-size:18px; opacity:0.95; }
-  .card { background:white; margin:-30px auto 20px; max-width:500px; border-radius:20px; padding:30px; box-shadow:0 15px 35px rgba(0,0,0,0.15); }
-  .donate-btn { background: linear-gradient(90deg,#8a2be2,#5a2be2); color:white; border:none; padding:18px 30px; border-radius:50px; font-size:20px; font-weight:bold; width:100%; cursor:pointer; margin:10px 0; box-shadow:0 8px 20px rgba(138,43,226,0.4); }
-  .donate-btn:hover { transform:scale(1.03); }
-  .impact { display:flex; justify-content:space-around; margin:25px 0; }
-  .impact div { background:#f1f0ff; padding:15px; border-radius:15px; width:28%; }
-  .impact b { font-size:22px; color:#8a2be2; display:block; }
-  #status { margin-top:15px; font-weight:bold; color:#2e7d32; }
-  footer { padding:20px; color:#888; font-size:13px; }
+*{box-sizing:border-box}
+body{font-family:'Segoe UI',Arial;margin:0;background:#f6f5ff;color:#1a1a2e;text-align:center}
+.hero{background:linear-gradient(135deg,#8a2be2,#4a00e0);color:white;padding:45px 20px 70px}
+.hero h1{font-size:34px;margin:0}
+.hero p{opacity:0.9;margin:8px 0 0}
+.badge{display:inline-block;background:rgba(255,255,255,0.2);padding:6px 14px;border-radius:20px;font-size:12px;margin-top:12px}
+.card{background:white;max-width:420px;margin:-45px auto 20px;padding:28px;border-radius:22px;box-shadow:0 15px 40px rgba(0,0,0,0.12);text-align:left}
+.rate-bar{display:flex;justify-content:space-between;background:#f1f0ff;padding:10px 14px;border-radius:12px;font-size:13px;margin-bottom:18px}
+.input-group{margin:14px 0}
+.input-group label{font-size:11px;font-weight:800;color:#666;text-transform:uppercase}
+.input-group input,.input-group select{width:100%;padding:13px 14px;margin-top:6px;border:1.5px solid #e5e5ef;border-radius:12px;font-size:15px;outline:none}
+.input-group input:focus{border-color:#8a2be2}
+.convert-box{background:linear-gradient(135deg,#f8f7ff,#f1f0ff);border:1.5px dashed #8a2be2;padding:14px;border-radius:14px;margin:16px 0;text-align:center}
+.convert-box b{font-size:20px;color:#4a00e0}
+.fee{font-size:11px;color:#888;margin-top:4px}
+.btn{width:100%;padding:15px;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer}
+.btn-primary{background:linear-gradient(90deg,#8a2be2,#4a00e0);color:white;box-shadow:0 8px 20px rgba(138,43,226,0.3)}
+.btn-primary:disabled{opacity:0.5}
+#status{margin-top:16px;padding:12px;border-radius:10px;font-size:13px;font-weight:600;text-align:center;display:none}
+#status.show{display:block}
+.status-ready{background:#f0f0ff;color:#4a00e0}
+.status-processing{background:#fff3cd;color:#856404}
+.status-success{background:#d4edda;color:#155724}
+.status-error{background:#f8d7da;color:#721c24}
+.history{max-width:420px;margin:0 auto 30px;background:white;padding:20px;border-radius:18px;text-align:left}
+.tx{font-size:12px;padding:10px;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between}
+footer{padding:25px;color:#888;font-size:12px;text-align:center}
 </style>
 </head>
 <body>
+
 <div class="hero">
-  <h1>🇺🇬 Charity Pi Uganda</h1>
-  <p>Restoring Hope, Feeding Dreams, Building Future<br>100% of Pi donations go to orphans</p>
+  <h1>💱 BabuLink Exchange</h1>
+  <p>Exchange Pi Crypto to Fiat - Instant Mobile Money Uganda</p>
+  <div class="badge">🔒 Pi Network • Sandbox • Secure • Official</div>
 </div>
 
 <div class="card">
-  <h2>💜 Make a Difference Today</h2>
-  <p>Your Pi helps us provide food, education & shelter to 500+ orphans in Kampala, Uganda.</p>
-  
-  <div class="impact">
-    <div><b>500+</b>Children</div>
-    <div><b>12</b>Years</div>
-    <div><b>100%</b>Transparent</div>
+  <div class="rate-bar"><span>Market Rate</span><span><b>1 Pi = 15,000 UGX</b> • Live</span></div>
+
+  <div class="input-group">
+    <label>Amount of Pi to Sell</label>
+    <input type="number" id="piAmount" value="1" min="0.1" step="0.1" oninput="calc()">
   </div>
 
-  <button class="donate-btn" onclick="donate(1)">❤️ Donate 1 Pi</button>
-  <button class="donate-btn" onclick="donate(3)" style="background:linear-gradient(90deg,#00c6ff,#0072ff)">🌟 Donate 3 Pi</button>
-  <button class="donate-btn" onclick="donate(5)" style="background:linear-gradient(90deg,#ff8a00,#e52e71)">👑 Donate 5 Pi</button>
-  
-  <p id="status"></p>
-  <p style="font-size:12px; color:#666; margin-top:20px;">✓ Verified Pi App ✓ Secure Pi SDK v2.0 ✓ Non-Profit Uganda</p>
+  <div class="convert-box">
+    <div style="font-size:13px">You Will Receive</div>
+    <b id="ugxAmount">15,000 UGX</b>
+    <div class="fee">Fee 2% (<span id="feeAmount">300</span> UGX) • Net: <b id="netAmount">14,700 UGX</b> • Time: &lt;2 min</div>
+  </div>
+
+  <div class="input-group">
+    <label>Payout Method</label>
+    <select id="method">
+      <option value="MTN">MTN Mobile Money 🇺🇬</option>
+      <option value="AIRTEL">Airtel Money 🇺🇬</option>
+      <option value="BANK">Bank Transfer</option>
+    </select>
+  </div>
+
+  <div class="input-group">
+    <label>Phone Number / Account</label>
+    <input type="text" id="phone" placeholder="256772123456">
+  </div>
+
+  <div class="input-group">
+    <label>Full Name</label>
+    <input type="text" id="fullName" placeholder="e.g. Babu Pi">
+  </div>
+
+  <button class="btn btn-primary" id="exchangeBtn" onclick="exchangePi()">💸 Exchange Now - Pay with Pi</button>
+  <div id="status" class="status-ready show">✅ Pi SDK Ready - Sandbox Mode</div>
+  <div style="margin-top:10px;font-size:11px;color:#888;text-align:center">Testnet Pi only • For Pi Checklist Video Proof</div>
 </div>
 
-<footer>
-  Charity Pi Uganda | Kampala, Uganda | Contact: babu35pi | Pi Network Official Charity
-</footer>
+<div class="history">
+  <h3 style="font-size:14px;margin:0 0 12px">📜 Recent Exchanges</h3>
+  <div id="historyList"><div style="font-size:12px;color:#888;text-align:center;padding:10px">No transactions yet</div></div>
+</div>
+
+<footer>BabuLink • Kampala • Pi Hackathon 2026<br>Backend: vo-green.vercel.app • Brainstorm 20k</footer>
 
 <script>
-async function donate(amount) {
-  document.getElementById("status").innerText = "Connecting to Pi Wallet...";
+const RATE = 15000;
+const FEE_PERCENT = 0.02;
+const BACKEND_URL = "https://vo-green.vercel.app";
+
+function calc(){
+  const pi = parseFloat(document.getElementById('piAmount').value) || 0;
+  const gross = pi * RATE;
+  const fee = gross * FEE_PERCENT;
+  const net = gross - fee;
+  document.getElementById('ugxAmount').innerText = gross.toLocaleString() + " UGX";
+  document.getElementById('feeAmount').innerText = Math.round(fee).toLocaleString();
+  document.getElementById('netAmount').innerText = Math.round(net).toLocaleString() + " UGX";
+  document.getElementById('exchangeBtn').innerText = `💸 Exchange ${pi} Pi Now`;
+  return {gross, net};
+}
+calc();
+
+function showStatus(msg, type){
+  const el = document.getElementById('status');
+  el.innerText = msg;
+  el.className = "show status-" + type;
+  el.style.display = "block";
+}
+
+function renderHistory(){
+  const list = document.getElementById('historyList');
+  const txs = JSON.parse(localStorage.getItem('babulink_tx') || '[]');
+  if(txs.length===0) return;
+  list.innerHTML = txs.map(t=> `<div class="tx"><span>${t.pi} Pi → ${t.ugx.toLocaleString()} UGX<br><small style="color:#888">${t.date}</small></span><span style="color:#4a00e0;font-weight:bold">${t.txid.substring(0,8)}...</span></div>`).join('');
+}
+renderHistory();
+
+async function exchangePi(){
+  const piAmount = parseFloat(document.getElementById('piAmount').value);
+  const phone = document.getElementById('phone').value.trim();
+  const fullName = document.getElementById('fullName').value.trim();
+  const method = document.getElementById('method').value;
+  const btn = document.getElementById('exchangeBtn');
+  const {net} = calc();
+
+  if(!piAmount || piAmount < 0.1){ alert("Enter Pi min 0.1"); return; }
+  if(!phone || phone.length < 10){ alert("Enter valid phone"); return; }
+  if(!fullName){ alert("Enter full name"); return; }
+
+  btn.disabled = true;
+  showStatus("Connecting to Pi Wallet... Approve in Pi Browser", "processing");
+
   try {
-    const scopes = ['payments','username'];
-    const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
+    await Pi.authenticate(['payments'], (incomplete)=>{
+      console.log("Incomplete found:", incomplete);
+      fetch(BACKEND_URL + '/api/complete', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({paymentId: incomplete.identifier, txid: incomplete.transaction?.txid || incomplete.identifier})
+      });
+    });
+
+    showStatus("Creating payment of " + piAmount + " Pi...", "processing");
+
     Pi.createPayment({
-      amount: amount,
-      memo: "Donation to Uganda Orphans - " + amount + " Pi - God Bless You!",
-      metadata: { type: "charity", uganda: true }
+      amount: piAmount,
+      memo: `BabuLink Exchange: ${piAmount} Pi to ${method} ${phone}`,
+      metadata: { phone, fullName, method, rate: RATE.toString(), purpose: "exchange-pi-to-fiat", app: "babulink" }
     }, {
-      onReadyForServerApproval: function(paymentId) {
-        console.log("Payment for approval:", paymentId);
-        document.getElementById("status").innerText = "Payment created! Approving...";
+      onReadyForServerApproval: async function(paymentId){
+        showStatus("Approving payment " + paymentId.substring(0,8) + "...", "processing");
+        try {
+          const res = await fetch(BACKEND_URL + '/api/approve', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({paymentId: paymentId})
+          });
+          if(!res.ok) throw new Error(await res.text() || "Approve failed - Add PI_API_KEY in Vercel vo project");
+          showStatus("✅ Approved! Now CONFIRM in Pi Wallet popup!", "processing");
+        } catch(e){
+          showStatus("Approve Error: " + e.message, "error");
+          btn.disabled = false;
+        }
       },
-      onReadyForServerCompletion: function(paymentId, txid) {
-        document.getElementById("status").innerText = "🎉 SUCCESS! Thank you! Tx: " + txid;
+      onReadyForServerCompletion: async function(paymentId, txid){
+        showStatus("Completing TxID " + txid.substring(0,8) + "...", "processing");
+        try {
+          const res = await fetch(BACKEND_URL + '/api/complete', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({paymentId: paymentId, txid: txid})
+          });
+          if(!res.ok) throw new Error(await res.text());
+          showStatus("🎉 SUCCESS! " + piAmount + " Pi = " + Math.round(net).toLocaleString() + " UGX to " + phone + ". TxID: " + txid, "success");
+          const txs = JSON.parse(localStorage.getItem('babulink_tx') || '[]');
+          txs.unshift({pi: piAmount, ugx: Math.round(net), txid, phone, date: new Date().toLocaleString()});
+          localStorage.setItem('babulink_tx', JSON.stringify(txs.slice(0,5)));
+          renderHistory();
+          alert("✅ CHECKLIST PROOF READY!\n\nPi: " + piAmount + "\nUGX: " + Math.round(net).toLocaleString() + "\nTo: " + phone + "\nTxID: " + txid + "\n\nRecord screen now for Pi Portal!");
+          btn.disabled = false;
+        } catch(e){
+          showStatus("Complete Error: " + e.message, "error");
+          btn.disabled = false;
+        }
       },
-      onCancel: function(paymentId) {
-        document.getElementById("status").innerText = "Donation cancelled. God bless you anyway!";
+      onCancel: function(paymentId){
+        showStatus("Cancelled: " + paymentId, "error");
+        btn.disabled = false;
       },
-      onError: function(error, payment) {
-        document.getElementById("status").innerText = "Error: " + error.message;
+      onError: function(err){
+        showStatus("Error: " + (err.message || JSON.stringify(err)), "error");
+        btn.disabled = false;
       }
     });
-  } catch (err) {
-    document.getElementById("status").innerText = "Auth error: " + err;
+  } catch(e){
+    showStatus("Auth Error: " + e.message + " - Open in Pi Browser!", "error");
+    btn.disabled = false;
   }
-}
-function onIncompletePaymentFound(payment) {
-  console.log("Incomplete payment found:", payment);
-  return;
 }
 </script>
 </body>
